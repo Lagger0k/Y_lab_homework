@@ -1,6 +1,6 @@
 import ipaddress
 import itertools
-import math
+from functools import reduce
 
 
 def domain_name(url: str) -> str:
@@ -25,9 +25,11 @@ def int32_to_ip(int32: int) -> str:
 def zeros(number: int) -> int:
     """Задача № 3. Функция принимает на вход целое число (integer) и
     возвращает количество конечных нулей в факториале (N! = 1 * 2 * 3 * ... * N) заданного числа:"""
-    factorial_from_number = math.factorial(number)
-    count_zeros = len(str(factorial_from_number)) - len(str(factorial_from_number).rstrip('0'))
-    return count_zeros
+    count = 0
+    while number >= 5:
+        number //= 5
+        count += number
+    return count
 
 
 def bananas(word: str) -> set:
@@ -50,27 +52,14 @@ def count_find_num(primes_l: list, limit: int) -> list:
     """Задача № 5. Функция принимает на вход список простых множителей (primes_l) и целое число,
     предел (limit), после чего генерирует по порядку все числа.
     Меньшие значения предела, которые имеют все и только простые множители простых чисел primesL."""
-    valid_factors = []
-    all_factors = []
-
-    for number in range(2, limit+1):
-        factors = []
-        divisor = 2
-        while divisor <= number:
-            if number % divisor == 0:
-                factors.append(divisor)
-                number = number / divisor
-            else:
-                divisor += 1
-        all_factors.append(factors)
-
-    for factor in all_factors:
-        if set(primes_l) == set(factor):
-            valid_factors.append(factor)
-
-    if valid_factors:
-        iterations = len(valid_factors)
-        max_number = max([math.prod(factor) for factor in valid_factors])
-        return [iterations, max_number]
-    else:
+    base_number = reduce((lambda a, b: a * b), primes_l, 1)
+    if base_number > limit:
         return []
+    nums = [base_number]
+    for i in primes_l:
+        for n in nums:
+            num = n * i
+            while (num <= limit) and (num not in nums):
+                nums.append(num)
+                num *= i
+    return [len(nums), max(nums)]

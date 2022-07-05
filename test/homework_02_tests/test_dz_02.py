@@ -1,5 +1,5 @@
 import unittest
-from homework_02.dz_02 import _calculates_the_distance_between_points, main, Point
+from homework_02.dz_02_01 import _calculates_the_distance_between_points, main, Point
 
 
 class Dz02TestCase(unittest.TestCase):
